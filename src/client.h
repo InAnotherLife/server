@@ -13,7 +13,6 @@ class Client {
  public:
   Client(std::string server_address, int server_por);
   ~Client() { Disconnect(); };
-  void GetAdressPort();
   void Connect();
   void Disconnect();
 

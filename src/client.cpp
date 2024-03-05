@@ -15,18 +15,6 @@ Client::Client(std::string server_address, int server_port)
   inet_pton(AF_INET, server_address_.c_str(), &server_.sin_addr);
 }
 
-// Получение порта сервера
-void Client::GetAdressPort() {
-  std::cout
-      << "Введите адрес и порт сервера (например, \"127.0.0.1\" и 8000): ";
-
-  std::cin >> server_port_;
-  if (std::cin.fail() || server_port_ < 0) {
-    std::cerr << "Ошибка ввода!" << std::endl;
-    exit(1);
-  }
-}
-
 void Client::Connect() {
   // Установка соединения с сервером
   if (connect(client_socket_, (struct sockaddr *)&server_, sizeof(server_)) <
