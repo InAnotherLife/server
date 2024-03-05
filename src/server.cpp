@@ -50,6 +50,7 @@ std::map<char, size_t> Server::CountLetter(const std::string& message) {
   return count;
 }
 
+// Отправка сообщения
 void Server::SendMessage(int client, std::string message) {
   if (message.find("=c") != std::string::npos ||
       message.find("=clients") != std::string::npos) {
@@ -64,6 +65,7 @@ void Server::SendMessage(int client, std::string message) {
     int other_client = std::stoi(message.substr(1, space_pos - 1));
     message.erase(0, space_pos + 1);
     if (clients_.count(other_client)) {
+      // Если клиент отправил сообщение самому себе
       if (client == other_client) {
         std::string new_message =
             "Вы отправили сообщение сами себе: " + message;
