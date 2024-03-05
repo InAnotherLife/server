@@ -1,6 +1,6 @@
 #include "server.h"
 
-Server::Server(int server_port) : server_port_(server_port), client_count_(0) {
+Server::Server() : server_port_(8000), client_count_(0) {
   // Создание сокета
   server_socket_ = socket(AF_INET, SOCK_STREAM, 0);
   if (server_socket_ < 0) {
@@ -13,6 +13,16 @@ Server::Server(int server_port) : server_port_(server_port), client_count_(0) {
   server_.sin_addr.s_addr = INADDR_ANY;
   server_.sin_port = htons(server_port_);
 };
+
+// Получение порта сервера
+void Server::GetPort() {
+  std::cout << "Введите порт сервера (например, 8000): ";
+  std::cin >> server_port_;
+  if (std::cin.fail() || server_port_ < 0) {
+    std::cerr << "Ошибка ввода!" << std::endl;
+    exit(1);
+  }
+}
 
 void Server::Start() {
   // Привязка сокета к адресу и порту
@@ -61,7 +71,7 @@ void Server::ClientHandler(int client) {
   // Получение данных от клиента
   while ((bytes_received = recv(client, buffer, 1024, 0)) > 0) {
     std::string message(buffer, bytes_received);
-    if (message == "clients") {
+    if (message == "=c" || message == "=clients") {
       // Отправка сообщения с количеством подключений к серверу
       std::string response =
           "Количество подключенных клиентов: " + std::to_string(client_count_) +

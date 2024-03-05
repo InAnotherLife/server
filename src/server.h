@@ -11,8 +11,9 @@
 
 class Server {
  public:
-  explicit Server(int server_port);
+  explicit Server();
   ~Server() { Stop(); };
+  void GetPort();
   void Start();
   void ClientHandler(int client);
   void Stop();

@@ -1,7 +1,6 @@
 #include "client.h"
 
-Client::Client(std::string server_ip, int server_port)
-    : server_ip_(server_ip), server_port_(server_port) {
+Client::Client() : server_address_("127.0.0.1"), server_port_(8000) {
   // Создание сокета
   client_socket_ = socket(AF_INET, SOCK_STREAM, 0);
   if (client_socket_ < 0) {
@@ -12,7 +11,17 @@ Client::Client(std::string server_ip, int server_port)
   // Настройка адреса сервера
   server_.sin_family = AF_INET;
   server_.sin_port = htons(server_port_);
-  inet_pton(AF_INET, server_ip_.c_str(), &server_.sin_addr);
+  inet_pton(AF_INET, server_address_.c_str(), &server_.sin_addr);
+}
+
+// Получение порта сервера
+void Client::GetPort() {
+  std::cout << "Введите порт сервера (например, 8000): ";
+  std::cin >> server_port_;
+  if (std::cin.fail() || server_port_ < 0) {
+    std::cerr << "Ошибка ввода!" << std::endl;
+    exit(1);
+  }
 }
 
 void Client::Connect() {
