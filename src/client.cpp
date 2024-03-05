@@ -25,8 +25,8 @@ void Client::Connect() {
 
   std::cout << "Подключение к серверу." << std::endl;
 
-  std::string message;
   std::cout << "Введите сообщение: ";
+  std::string message;
   std::cin >> message;
   if (std::cin.fail()) {
     std::cerr << "Ошибка ввода!" << std::endl;

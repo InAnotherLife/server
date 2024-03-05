@@ -27,7 +27,7 @@ void Server::Start() {
     exit(1);
   }
   std::cout << "Сервер запущен." << std::endl;
-  std::cout << "Сервер прослушивает порт: " << server_port_ << std::endl;
+  std::cout << "Сервер прослушивает порт " << server_port_ << "." << std::endl;
 
   // Цикл обработки входящих подключений
   while (true) {
@@ -53,7 +53,7 @@ std::map<char, size_t> Server::CountLetter(const std::string& message) {
 
 // Метод для обработки подключений клиентов
 void Server::ClientHandler(int client) {
-  std::cout << "Клиент подключился к серверу" << std::endl;
+  std::cout << "Клиент подключился к серверу." << std::endl;
   client_count_++;
   char buffer[1024];
   int bytes_received;
@@ -64,7 +64,8 @@ void Server::ClientHandler(int client) {
     if (message == "clients") {
       // Отправка сообщения с количеством подключений к серверу
       std::string response =
-          "Количество подключенных клиентов: " + std::to_string(client_count_);
+          "Количество подключенных клиентов: " + std::to_string(client_count_) +
+          ".";
       send(client, response.c_str(), response.length(), 0);
     } else {
       // Отправка сообщения с количеством букв
@@ -80,7 +81,7 @@ void Server::ClientHandler(int client) {
   }
 
   if (bytes_received == 0) {
-    std::cout << "Клиент отключился." << std::endl;
+    std::cout << "Клиент отключился от сервера." << std::endl;
   } else {
     std::cerr << "Ошибка получения данных от клиента!" << std::endl;
   }
