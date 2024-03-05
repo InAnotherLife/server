@@ -36,7 +36,7 @@ void Server::Start() {
       std::cerr << "Ошибка при подключении клиента!";
       exit(1);
     }
-    // Создание нового потока для обработки подключения клиента
+    // Создание нового потока для обработки подключения
     std::thread(&Server::ClientThread, this, client).detach();
   }
 }
@@ -45,7 +45,9 @@ void Server::Start() {
 std::map<char, size_t> Server::CountLetter(const std::string& message) {
   std::map<char, size_t> count;
   for (char c : message) {
-    count[c]++;
+    if (isalpha(c)) {
+      count[c]++;
+    }
   }
   return count;
 }
