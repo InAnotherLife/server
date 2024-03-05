@@ -1,6 +1,6 @@
 #include "client.h"
 
-Client::Client(std::string server_address, int server_port)
+Client::Client(const std::string &server_address, int server_port)
     : server_address_(server_address), server_port_(server_port) {
   // Создание сокета
   client_socket_ = socket(AF_INET, SOCK_STREAM, 0);
