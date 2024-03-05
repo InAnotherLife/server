@@ -25,7 +25,7 @@ void Client::Connect() {
 
   std::cout << "Подключение к серверу." << std::endl;
 
-  std::cout << "Введите сообщение для сервера: ";
+  std::cout << "Введите сообщение для сервера или клиента через =id клиента: ";
   std::string message;
   std::getline(std::cin, message);
   if (std::cin.fail()) {

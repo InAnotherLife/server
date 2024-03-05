@@ -25,6 +25,7 @@ class Server {
   size_t client_count_;
   std::set<int> clients_;
   std::map<char, size_t> CountLetter(const std::string &message);
+  void SendMessage(int client, std::string message);
 };
 
 #endif  // SRC_SERVER_

@@ -50,6 +50,48 @@ std::map<char, size_t> Server::CountLetter(const std::string& message) {
   return count;
 }
 
+void Server::SendMessage(int client, std::string message) {
+  if (message.find("=c") != std::string::npos ||
+      message.find("=clients") != std::string::npos) {
+    // Отправка сообщения с количеством подключений к серверу
+    std::string response =
+        "Количество подключенных клиентов: " + std::to_string(client_count_) +
+        ".";
+    send(client, response.c_str(), response.length(), 0);
+  } else if (message[0] == '=' && isdigit(message[1])) {
+    // Отправка сообщения другому клиенту
+    size_t space_pos = message.find(' ');
+    int other_client = std::stoi(message.substr(1, space_pos - 1));
+    message.erase(0, space_pos + 1);
+    if (clients_.count(other_client)) {
+      if (client == other_client) {
+        std::string new_message =
+            "Вы отправили сообщение сами себе: " + message;
+        send(client, new_message.c_str(), new_message.length(), 0);
+      } else {
+        std::string new_message = "Сообщение для клиента номер " +
+                                  std::to_string(other_client) + ": " + message;
+        send(other_client, new_message.c_str(), new_message.length(), 0);
+      }
+    } else {
+      std::string error_message = "Клиента с номером " +
+                                  std::to_string(other_client) +
+                                  " не существует!";
+      send(client, error_message.c_str(), error_message.length(), 0);
+    }
+  } else {
+    // Отправка сообщения клиенту с подсчетом количества букв
+    std::string new_message = "Message " + message + "\n";
+    for (auto& entry : CountLetter(message)) {
+      new_message += entry.first;
+      new_message += "\t";
+      new_message += std::to_string(entry.second);
+      new_message += "\n";
+    }
+    send(client, new_message.c_str(), new_message.length(), 0);
+  }
+}
+
 // Метод для обработки подключений клиентов
 void Server::ClientThread(int client) {
   clients_.insert(client);
@@ -59,27 +101,10 @@ void Server::ClientThread(int client) {
   char buffer[1024];
   int bytes_received;
 
-  // Получение данных от клиента
+  // Получение данных от клиента и отправка сообшения клиенту
   while ((bytes_received = recv(client, buffer, 1024, 0)) > 0) {
     std::string message(buffer, bytes_received);
-    if (message.find("=c") != std::string::npos ||
-        message.find("=clients") != std::string::npos) {
-      // Отправка сообщения с количеством подключений к серверу
-      std::string response =
-          "Количество подключенных клиентов: " + std::to_string(client_count_) +
-          ".";
-      send(client, response.c_str(), response.length(), 0);
-    } else {
-      // Отправка сообщения клиенту с количеством букв
-      std::string new_message = "Message " + message + "\n";
-      for (auto& entry : CountLetter(message)) {
-        new_message += entry.first;
-        new_message += "\t";
-        new_message += std::to_string(entry.second);
-        new_message += "\n";
-      }
-      send(client, new_message.c_str(), new_message.length(), 0);
-    }
+    SendMessage(client, message);
   }
 
   if (bytes_received == 0) {
