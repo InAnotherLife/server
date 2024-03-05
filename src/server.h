@@ -14,6 +14,7 @@ class Server {
  public:
   explicit Server(int server_port);
   ~Server() { Stop(); };
+
   void Start();
   void ClientThread(int client);
   void Stop();
