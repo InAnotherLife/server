@@ -6,8 +6,13 @@ int main(int argc, char *argv[]) {
               << std::endl;
     exit(1);
   }
+  int server_port = std::stoi(argv[1]);
+  if (server_port <= 0) {
+    std::cerr << "Ошибка ввода!" << std::endl;
+    exit(1);
+  }
 
-  Server server(std::stoi(argv[1]));
+  Server server(server_port);
   server.Start();
   return 0;
 }

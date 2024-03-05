@@ -35,6 +35,7 @@ void Client::Connect() {
       exit(1);
     }
 
+    // Отправка сообщения на сервер
     send(client_socket_, message.c_str(), message.length(), 0);
 
     // Получение ответа от сервера
