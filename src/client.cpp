@@ -25,24 +25,27 @@ void Client::Connect() {
 
   std::cout << "Подключение к серверу." << std::endl;
 
-  std::cout << "Введите сообщение для сервера или клиента через =id клиента: ";
-  std::string message;
-  std::getline(std::cin, message);
-  if (std::cin.fail()) {
-    std::cerr << "Ошибка ввода!" << std::endl;
-    exit(1);
-  }
+  while (true) {
+    std::cout
+        << "Введите сообщение для сервера или клиента через =id клиента: ";
+    std::string message;
+    std::getline(std::cin, message);
+    if (std::cin.fail()) {
+      std::cerr << "Ошибка ввода!" << std::endl;
+      exit(1);
+    }
 
-  send(client_socket_, message.c_str(), message.length(), 0);
+    send(client_socket_, message.c_str(), message.length(), 0);
 
-  // Получение ответа от сервера
-  char buffer[1024];
-  int bytes_received = recv(client_socket_, buffer, 1024, 0);
-  if (bytes_received > 0) {
-    std::cout << "Ответ сервера:" << std::endl;
-    std::cout << std::string(buffer, bytes_received) << std::endl;
-  } else {
-    std::cerr << "Ошибка при получении ответа от сервера!" << std::endl;
+    // Получение ответа от сервера
+    char buffer[1024];
+    int bytes_received = recv(client_socket_, buffer, 1024, 0);
+    if (bytes_received > 0) {
+      std::cout << "Ответ сервера:" << std::endl;
+      std::cout << std::string(buffer, bytes_received) << std::endl;
+    } else {
+      std::cerr << "Ошибка при получении ответа от сервера!" << std::endl;
+    }
   }
 }
 
