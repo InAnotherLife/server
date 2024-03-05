@@ -27,7 +27,7 @@ void Client::Connect() {
 
   std::cout << "Введите сообщение для сервера: ";
   std::string message;
-  std::cin >> message;
+  std::getline(std::cin, message);
   if (std::cin.fail()) {
     std::cerr << "Ошибка ввода!" << std::endl;
     exit(1);
@@ -41,8 +41,6 @@ void Client::Connect() {
   if (bytes_received > 0) {
     std::cout << "Ответ сервера:" << std::endl;
     std::cout << std::string(buffer, bytes_received) << std::endl;
-  } else if (bytes_received == 0) {
-    std::cout << "Отключение от сервера." << std::endl;
   } else {
     std::cerr << "Ошибка при получении ответа от сервера!" << std::endl;
   }

@@ -7,15 +7,15 @@
 
 #include <iostream>
 #include <map>
+#include <set>
 #include <thread>
 
 class Server {
  public:
-  explicit Server();
+  explicit Server(int server_port);
   ~Server() { Stop(); };
-  void GetPort();
   void Start();
-  void ClientHandler(int client);
+  void ClientThread(int client);
   void Stop();
 
  private:
@@ -23,6 +23,7 @@ class Server {
   int server_port_;
   struct sockaddr_in server_;
   size_t client_count_;
+  std::set<int> clients_;
   std::map<char, size_t> CountLetter(const std::string &message);
 };
 
