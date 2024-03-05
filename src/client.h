@@ -11,9 +11,9 @@
 
 class Client {
  public:
-  Client();
+  Client(std::string server_address, int server_por);
   ~Client() { Disconnect(); };
-  void GetPort();
+  void GetAdressPort();
   void Connect();
   void Disconnect();
 
