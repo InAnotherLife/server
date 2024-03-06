@@ -1,6 +1,6 @@
 #include "server.h"
 
-Server::Server(int server_port) : server_port_(server_port), client_count_(0) {
+Server::Server(int server_port) : server_port_(server_port) {
   // Создание сокета
   server_socket_ = socket(AF_INET, SOCK_STREAM, 0);
   if (server_socket_ < 0) {
@@ -58,7 +58,7 @@ void Server::SendMessage(int client, std::string message) {
       message.find("=clients") != std::string::npos) {
     // Отправка сообщения с количеством подключений к серверу
     std::string response =
-        "Количество подключенных клиентов: " + std::to_string(client_count_) +
+        "Количество подключенных клиентов: " + std::to_string(clients_.size()) +
         ".";
     send(client, response.c_str(), response.length(), 0);
   } else if (message[0] == '=' && isdigit(message[1])) {
@@ -98,10 +98,9 @@ void Server::SendMessage(int client, std::string message) {
 
 // Метод для обработки подключений клиентов
 void Server::ClientThread(int client) {
-  clients_.insert(client);
   std::cout << "Клиент номер " << client << " подключился к серверу."
             << std::endl;
-  client_count_++;
+  clients_.insert(client);
   char buffer[1024];
   int bytes_received;
 
@@ -118,7 +117,6 @@ void Server::ClientThread(int client) {
     std::cerr << "Ошибка получения данных от клиента номер " << client << "!"
               << std::endl;
   }
-  client_count_--;
   clients_.erase(client);
   close(client);
 }

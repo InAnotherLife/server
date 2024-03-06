@@ -23,7 +23,6 @@ class Server {
   int server_socket_;
   int server_port_;
   struct sockaddr_in server_;
-  size_t client_count_;
   std::set<int> clients_;
   std::map<char, size_t> CountLetter(const std::string &message);
   void SendMessage(int client, std::string message);
