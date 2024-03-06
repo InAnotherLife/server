@@ -1,9 +1,9 @@
 #include "server.h"
 
-Server::Server(int server_port) : server_port_(server_port) {
+Server::Server(int port) : port_(port) {
   // Создание сокета
-  server_socket_ = socket(AF_INET, SOCK_STREAM, 0);
-  if (server_socket_ < 0) {
+  socket_ = socket(AF_INET, SOCK_STREAM, 0);
+  if (socket_ < 0) {
     std::cerr << "Ошибка при создании сокета!" << std::endl;
     exit(1);
   }
@@ -11,27 +11,27 @@ Server::Server(int server_port) : server_port_(server_port) {
   // Настройка адреса сервера
   server_.sin_family = AF_INET;
   server_.sin_addr.s_addr = INADDR_ANY;
-  server_.sin_port = htons(server_port_);
+  server_.sin_port = htons(port_);
 };
 
 void Server::Start() {
   // Привязка сокета к адресу и порту
-  if (bind(server_socket_, (struct sockaddr*)&server_, sizeof(server_)) < 0) {
+  if (bind(socket_, (struct sockaddr*)&server_, sizeof(server_)) < 0) {
     std::cerr << "Ошибка привязки сокета!" << std::endl;
     exit(1);
   }
 
   // Прослушивание входящих подключений
-  if (listen(server_socket_, 5) < 0) {
+  if (listen(socket_, 5) < 0) {
     std::cerr << "Ошибка прослушивания сокета!" << std::endl;
     exit(1);
   }
   std::cout << "Сервер запущен." << std::endl;
-  std::cout << "Сервер прослушивает порт " << server_port_ << "." << std::endl;
+  std::cout << "Сервер прослушивает порт " << port_ << "." << std::endl;
 
   // Обработка входящих подключений
   while (true) {
-    int client = accept(server_socket_, nullptr, nullptr);
+    int client = accept(socket_, nullptr, nullptr);
     if (client == -1) {
       std::cerr << "Ошибка при подключении клиента!";
       exit(1);
@@ -121,4 +121,4 @@ void Server::ClientThread(int client) {
   close(client);
 }
 
-void Server::Stop() { close(server_socket_); }
+void Server::Stop() { close(socket_); }

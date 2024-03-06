@@ -1,24 +1,23 @@
 #include "client.h"
 
-Client::Client(const std::string &server_address, int server_port)
-    : server_address_(server_address), server_port_(server_port) {
+Client::Client(const std::string &address, int port)
+    : address_(address), port_(port) {
   // Создание сокета
-  client_socket_ = socket(AF_INET, SOCK_STREAM, 0);
-  if (client_socket_ < 0) {
+  socket_ = socket(AF_INET, SOCK_STREAM, 0);
+  if (socket_ < 0) {
     std::cerr << "Ошибка при создании сокета!" << std::endl;
     exit(1);
   }
 
   // Настройка адреса сервера
   server_.sin_family = AF_INET;
-  server_.sin_port = htons(server_port_);
-  inet_pton(AF_INET, server_address_.c_str(), &server_.sin_addr);
+  server_.sin_port = htons(port_);
+  inet_pton(AF_INET, address_.c_str(), &server_.sin_addr);
 }
 
 void Client::Connect() {
   // Установка соединения с сервером
-  if (connect(client_socket_, (struct sockaddr *)&server_, sizeof(server_)) <
-      0) {
+  if (connect(socket_, (struct sockaddr *)&server_, sizeof(server_)) < 0) {
     std::cerr << "Ошибка подключения к серверу!" << std::endl;
     exit(1);
   }
@@ -36,11 +35,11 @@ void Client::Connect() {
     }
 
     // Отправка сообщения на сервер
-    send(client_socket_, message.c_str(), message.length(), 0);
+    send(socket_, message.c_str(), message.length(), 0);
 
     // Получение ответа от сервера
     char buffer[1024];
-    int bytes_received = recv(client_socket_, buffer, 1024, 0);
+    int bytes_received = recv(socket_, buffer, 1024, 0);
     if (bytes_received > 0) {
       std::cout << "Ответ сервера:" << std::endl;
       std::cout << std::string(buffer, bytes_received) << std::endl;
@@ -50,4 +49,4 @@ void Client::Connect() {
   }
 }
 
-void Client::Disconnect() { close(client_socket_); }
+void Client::Disconnect() { close(socket_); }

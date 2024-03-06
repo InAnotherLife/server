@@ -12,15 +12,15 @@
 
 class Server {
  public:
-  explicit Server(int server_port);
+  explicit Server(int port);
   ~Server() { Stop(); };
 
   void Start();
   void Stop();
 
  private:
-  int server_socket_;
-  int server_port_;
+  int socket_;
+  int port_;
   struct sockaddr_in server_;
   std::set<int> clients_;
   void ClientThread(int client);

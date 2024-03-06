@@ -11,16 +11,16 @@
 
 class Client {
  public:
-  Client(const std::string &server_address, int server_por);
+  Client(const std::string &address, int port);
   ~Client() { Disconnect(); };
 
   void Connect();
   void Disconnect();
 
  private:
-  int client_socket_;
-  std::string server_address_;
-  int server_port_;
+  int socket_;
+  std::string address_;
+  int port_;
   struct sockaddr_in server_;
 };
 
