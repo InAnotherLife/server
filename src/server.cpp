@@ -44,9 +44,9 @@ void Server::Start() {
 // Подсчет количества букв в сообщении
 std::map<char, size_t> Server::CountLetter(const std::string& message) {
   std::map<char, size_t> count;
-  for (char c : message) {
-    if (isalpha(c)) {
-      count[c]++;
+  for (char sym : message) {
+    if (isalpha(sym)) {
+      count[sym]++;
     }
   }
   return count;
