@@ -86,10 +86,10 @@ void Server::SendMessage(int client, std::string message) {
   } else {
     // Отправка сообщения клиенту с подсчетом количества букв
     std::string new_message = "Message " + message + "\n";
-    for (auto& entry : CountLetter(message)) {
-      new_message += entry.first;
+    for (auto& item : CountLetter(message)) {
+      new_message += item.first;
       new_message += "\t";
-      new_message += std::to_string(entry.second);
+      new_message += std::to_string(item.second);
       new_message += "\n";
     }
     send(client, new_message.c_str(), new_message.length(), 0);
