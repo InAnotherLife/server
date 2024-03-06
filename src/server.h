@@ -16,7 +16,6 @@ class Server {
   ~Server() { Stop(); };
 
   void Start();
-  void ClientThread(int client);
   void Stop();
 
  private:
@@ -24,6 +23,7 @@ class Server {
   int server_port_;
   struct sockaddr_in server_;
   std::set<int> clients_;
+  void ClientThread(int client);
   std::map<char, size_t> CountLetter(const std::string &message);
   void SendMessage(int client, std::string message);
 };
