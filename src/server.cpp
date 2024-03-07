@@ -37,7 +37,7 @@ void Server::Start() {
       exit(1);
     }
     // Создание нового потока для обработки подключения
-    std::thread(&Server::ClientThread, this, client).detach();
+    client_thread_.push_back(std::thread(&Server::ClientThread, this, client));
   }
 }
 
@@ -121,4 +121,11 @@ void Server::ClientThread(int client) {
   close(client);
 }
 
-void Server::Stop() { close(socket_); }
+void Server::Stop() {
+  close(socket_);
+  for (std::thread& th : client_thread_) {
+    if (th.joinable()) {
+      th.join();
+    }
+  }
+}

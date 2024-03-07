@@ -9,6 +9,7 @@
 #include <map>
 #include <set>
 #include <thread>
+#include <vector>
 
 class Server {
  public:
@@ -23,6 +24,7 @@ class Server {
   int port_;
   struct sockaddr_in server_;
   std::set<int> clients_;
+  std::vector<std::thread> client_thread_;
   void ClientThread(int client);
   std::map<char, size_t> CountLetter(const std::string &message);
   void SendMessage(int client, std::string message);
