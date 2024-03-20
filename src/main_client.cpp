@@ -1,14 +1,16 @@
 #include "client.h"
 
 int main(int argc, char *argv[]) {
-  if (argc != 3) {
-    std::cerr << "Необходимо ввести ip-адрес и порт сервера (например, "
-                 "\"127.0.0.1\" 8000)!"
-              << std::endl;
-    exit(1);
+  try {
+    if (argc != 3) {
+      throw std::runtime_error(
+          "Необходимо ввести ip-адрес и порт сервера (например, \"127.0.0.1\" "
+          "8000)!)");
+    }
+    Client client(argv[1], std::stoi(argv[2]));
+    client.Connect();
+  } catch (const std::exception &err) {
+    std::cerr << "Ошибка: " << err.what() << std::endl;
   }
-
-  Client client(argv[1], std::stoi(argv[2]));
-  client.Connect();
   return 0;
 }

@@ -4,8 +4,7 @@ Server::Server(int port) : port_(port) {
   // Создание сокета
   socket_ = socket(AF_INET, SOCK_STREAM, 0);
   if (socket_ < 0) {
-    std::cerr << "Ошибка при создании сокета!" << std::endl;
-    exit(1);
+    throw std::runtime_error("Ошибка при создании сокета!");
   }
 
   // Настройка адреса сервера
@@ -17,14 +16,12 @@ Server::Server(int port) : port_(port) {
 void Server::Start() {
   // Привязка сокета к адресу и порту
   if (bind(socket_, (struct sockaddr*)&server_, sizeof(server_)) < 0) {
-    std::cerr << "Ошибка привязки сокета!" << std::endl;
-    exit(1);
+    throw std::runtime_error("Ошибка привязки сокета!");
   }
 
   // Прослушивание входящих подключений
   if (listen(socket_, 5) < 0) {
-    std::cerr << "Ошибка прослушивания сокета!" << std::endl;
-    exit(1);
+    throw std::runtime_error("Ошибка прослушивания сокета!");
   }
   std::cout << "Сервер запущен." << std::endl;
   std::cout << "Сервер прослушивает порт " << port_ << "." << std::endl;
@@ -33,11 +30,10 @@ void Server::Start() {
   while (true) {
     int client = accept(socket_, nullptr, nullptr);
     if (client == -1) {
-      std::cerr << "Ошибка при подключении клиента!";
-      exit(1);
+      throw std::runtime_error("Ошибка при подключении клиента!");
     }
     // Создание нового потока для обработки подключения
-    client_thread_.push_back(std::thread(&Server::ClientThread, this, client));
+    client_threads_.push_back(std::thread(&Server::ClientThread, this, client));
   }
 }
 
@@ -96,10 +92,19 @@ void Server::SendMessage(int client, std::string message) {
   }
 }
 
+// Получение текущих даты и времени
+std::string Server::GetDateTime() {
+  std::time_t now = std::time(nullptr);
+  std::tm* dt = std::localtime(&now);
+  std::stringstream ss;
+  ss << std::put_time(dt, "%d:%m:%Y %H:%M");
+  return ss.str();
+}
+
 // Метод для обработки подключений клиентов
 void Server::ClientThread(int client) {
-  std::cout << "Клиент номер " << client << " подключился к серверу."
-            << std::endl;
+  std::cout << GetDateTime() << " Клиент номер " << client
+            << " подключился к серверу." << std::endl;
   clients_.insert(client);
   char buffer[1024];
   int bytes_received;
@@ -111,11 +116,11 @@ void Server::ClientThread(int client) {
   }
 
   if (bytes_received == 0) {
-    std::cout << "Клиент номер " << client << " отключился от сервера."
-              << std::endl;
+    std::cout << GetDateTime() << " Клиент номер " << client
+              << " отключился от сервера." << std::endl;
   } else {
-    std::cerr << "Ошибка получения данных от клиента номер " << client << "!"
-              << std::endl;
+    throw std::runtime_error("Ошибка получения данных от клиента номер " +
+                             std::to_string(client) + "!");
   }
   clients_.erase(client);
   close(client);
@@ -123,9 +128,9 @@ void Server::ClientThread(int client) {
 
 void Server::Stop() {
   close(socket_);
-  for (std::thread& th : client_thread_) {
-    if (th.joinable()) {
-      th.join();
+  for (std::thread& thread : client_threads_) {
+    if (thread.joinable()) {
+      thread.join();
     }
   }
 }

@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <set>
@@ -24,10 +26,11 @@ class Server {
   int port_;
   struct sockaddr_in server_;
   std::set<int> clients_;
-  std::vector<std::thread> client_thread_;
+  std::vector<std::thread> client_threads_;
   void ClientThread(int client);
   std::map<char, size_t> CountLetter(const std::string &message);
   void SendMessage(int client, std::string message);
+  std::string GetDateTime();
 };
 
 #endif  // SRC_SERVER_

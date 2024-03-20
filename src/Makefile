@@ -23,4 +23,4 @@ cppcheck:
 
 clean:
 	rm -f ./client ./server ./*.o ./*.a
-	rm -rf ../.vscode
+	rm -rf ./.vscode

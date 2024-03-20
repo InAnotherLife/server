@@ -5,8 +5,7 @@ Client::Client(const std::string &address, int port)
   // Создание сокета
   socket_ = socket(AF_INET, SOCK_STREAM, 0);
   if (socket_ < 0) {
-    std::cerr << "Ошибка при создании сокета!" << std::endl;
-    exit(1);
+    throw std::runtime_error("Ошибка при создании сокета!");
   }
 
   // Настройка адреса сервера
@@ -18,8 +17,7 @@ Client::Client(const std::string &address, int port)
 void Client::Connect() {
   // Установка соединения с сервером
   if (connect(socket_, (struct sockaddr *)&server_, sizeof(server_)) < 0) {
-    std::cerr << "Ошибка подключения к серверу!" << std::endl;
-    exit(1);
+    throw std::runtime_error("Ошибка подключения к серверу!");
   }
 
   std::cout << "Подключение к серверу." << std::endl;
@@ -30,8 +28,7 @@ void Client::Connect() {
     std::string message;
     std::getline(std::cin, message);
     if (std::cin.fail()) {
-      std::cerr << "Ошибка ввода!" << std::endl;
-      exit(1);
+      throw std::runtime_error("Ошибка ввода!");
     }
 
     // Отправка сообщения на сервер
@@ -44,7 +41,7 @@ void Client::Connect() {
       std::cout << "Ответ сервера:" << std::endl;
       std::cout << std::string(buffer, bytes_received) << std::endl;
     } else {
-      std::cerr << "Ошибка при получении ответа от сервера!" << std::endl;
+      throw std::runtime_error("Ошибка при получении ответа от сервера!");
     }
   }
 }
